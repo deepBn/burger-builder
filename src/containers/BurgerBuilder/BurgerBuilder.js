@@ -30,6 +30,17 @@ class BurgerBuilder extends Component {
     loading: false
   };
 
+  componentDidMount () {
+    /*axios.get( 'https://react-burger-deepbn.firebaseio.com/ingredients.json' )
+      .then( response => {
+        this.setState( { ingredients: response.data } );
+      } )
+      .catch( error => {
+        this.setState( { error: true } );
+      } );*/
+    console.log(this.props);
+  }
+
   updatePurchaseState(ingredients) {
     const sum = Object.keys(ingredients)
       .map(igKey => {
@@ -78,7 +89,7 @@ class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     //alert('You continue');
-    this.setState({loading:true});
+/*    this.setState({loading:true});
     const order = {
       ingredients: this.state.ingredients,
       price: this.state.totalPrice,
@@ -99,7 +110,8 @@ class BurgerBuilder extends Component {
       })
       .catch(error=>{
         this.setState({loading: false, purchasing: false});
-      });
+      });*/
+    this.props.history.push('/checkout');
   };
 
   render() {
