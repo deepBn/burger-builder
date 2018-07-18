@@ -13,13 +13,13 @@ const input = (props) => {
     case  ('textarea'):
       inputElement = <textarea
         className={classes.InputElement}
-        {...props}
+        {...props.elementConfig}
         value={props.value}/>;
       break;
     default:
       inputElement = <input
         className={classes.InputElement}
-        {...props}
+        {...props.elementConfig}
         value={props.value}/>
   }
   return (
