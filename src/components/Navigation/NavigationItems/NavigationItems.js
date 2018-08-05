@@ -8,7 +8,7 @@ const navigationItems = props => (
         <NavigationItem link="/orders">Orders</NavigationItem>
         {
             props.isAuthenticated
-                ? <NavigationItem link="">Logout</NavigationItem>
+                ? <NavigationItem link="/logout">Logout</NavigationItem>
                 : <NavigationItem link="/auth">Authenticate</NavigationItem>
         }
     </ul>
