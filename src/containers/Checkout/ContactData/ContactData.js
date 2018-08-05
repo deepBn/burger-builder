@@ -48,8 +48,8 @@ class ContactData extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    minLength: 7,
-                    maxLength: 7
+                    minLength: 6,
+                    maxLength: 6
                 },
                 valid: false,
                 touched: false
@@ -111,7 +111,7 @@ class ContactData extends Component {
             price: this.props.price,
             orderData: formData
         };
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(order, this.props.token);
     };
 
     checkValidity = (value, rules) => {
@@ -189,13 +189,14 @@ const mapStateToProps = state => {
     return {
         price: state.burgerBuilder.totalPrice,
         ings: state.burgerBuilder.ingredients,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: orderData => dispatch(purchaseBurger(orderData))
+        onOrderBurger: (orderData, token)=> dispatch(purchaseBurger(orderData, token))
     };
 };
 
