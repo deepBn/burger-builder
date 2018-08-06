@@ -24,6 +24,9 @@ export const authFail = (error) => {
 };
 
 export const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
     return {
         type: actionTypes.AUTH_LOGOUT
     }
@@ -44,14 +47,18 @@ export const auth = (email, password, isSignup) => {
         returnSecureToken: true
     };
     let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDAMr8_Rk5TH966RjjAmKh7_N0-W9CNcYs';
-    if(!isSignup) {
+    if (!isSignup) {
         url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDAMr8_Rk5TH966RjjAmKh7_N0-W9CNcYs';
     }
     return dispatch => {
         dispatch(authStart());
         axios.post(url, authData)
             .then(response => {
+                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
                 console.log(response);
+                localStorage.setItem('token', response.data.idToken);
+                localStorage.setItem('expirationDate', expirationDate);
+                localStorage.setItem('userId', response.data.localId);
                 dispatch(authSuccess(response.data.idToken, response.data.localId));
                 dispatch(checkAuthTimeout(response.data.expiresIn));
             })
@@ -67,4 +74,24 @@ export const setAuthRedirectPath = path => {
         type: actionTypes.SET_AUTH_REDIRECT_PATH,
         path: path
     }
+};
+
+export const checkAuthState = () => {
+    return dispatch => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            dispatch(logout());
+        } else {
+            const expirationDate = new Date(localStorage.getItem('expirationDate'));
+            if (expirationDate <= new Date()) {
+                dispatch(logout());
+            } else {
+                const userId = localStorage.getItem('userId');
+                dispatch(authSuccess(token, userId));
+                console.log(expirationDate.getTime() - new Date().getTime());
+                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+            }
+        }
+    };
+
 };
